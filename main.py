@@ -3,12 +3,12 @@
 from crt import CrtPassiveScan
 from hunter import EmailHunter
 from shodan import Shodan
-
+import json
 import parse
 import threading
 import argparse
 import sys
-from os import path
+from os import path, mkdir
 from pwn import *
 
 global subdomainDB
@@ -31,7 +31,6 @@ def query(domain):
 
     CrtPassiveScan(domain).query() # make and save crt.sh petition
     subdomains = parse.ParseCrtSh("out.txt", domain).extract() # crawl file and extract subdomains
-    print(subdomains)
     for subdomain in subdomains:
         if subdomain not in subdomainDB:
             subdomainDB[subdomain] = {"IP":"","ports":""}
@@ -86,7 +85,16 @@ def main():
         emails = call_hunter('.hunterio', domains)
 
     if emails:
-        print(emails)
+        try:
+            os.mkdir("results")
+        except FileExistsError:
+            pass
+            
+        with open("results/emails.lst", "w") as f:
+            for email in emails:
+                f.write(email + "\n")
+
+        
     
     # wait for crt.sh to finish to start port scanning on every IP using shodan
     for thread in threads:
@@ -98,7 +106,15 @@ def main():
         subdomainDB[sub]["IP"] = ip
         subdomainDB[sub]["ports"] = ports
     
-    print(subdomainDB)
+    try:
+        os.mkdir("results")
+    except FileExistsError:
+        pass
+
+    with open("results/domains.lst", "w") as f:
+        json.dump(subdomainDB, f)
+
+    
         
 if __name__ == '__main__':
     main()
