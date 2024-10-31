@@ -52,4 +52,3 @@ class ParseCrtSh:
         self.delete_temp_files()
 
         return subdomains
-        
