@@ -53,6 +53,3 @@ class ParseCrtSh:
 
         return subdomains
         
-
-if __name__ == "__main__":
-    ParseCrtSh("out.txt", "escriba.es").extract()
