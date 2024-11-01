@@ -17,8 +17,8 @@ class Chaos:
         return self.fqdn(sub) # this will return the full qualified domain name
 
     def fqdn(self, subdomains):
-
-        subdomains.remove("*") # remove the annoying wildcards
+        if '*' in subdomains:
+            subdomains.remove("*") # remove the annoying wildcards
 
         for item in range(len(subdomains)):
             subdomains[item] = str(subdomains[item]) + "." + self.domain

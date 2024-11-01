@@ -38,8 +38,11 @@ def get_key(filename):
     with open(filename, "r") as f:
         return f.read()
 
-def query_chaos(domain, api_key):
+def query_chaos(domain):
+
+    api_key = get_key('.chaos')
     subdomains = Chaos(domain, api_key).query_chaos()
+    
     print(subdomains)
 
 def query_crt(domain):
@@ -52,28 +55,26 @@ def query_crt(domain):
     else:
         print("[!] either crt.sh is down or no subdomains were found for the target(s)")
 
-def call_hunter(api_file, domains):
-    try:
+def call_hunter(domains):
 
-        with open(api_file, "r") as f:                
-            api_key = f.read()
-
-        for domain in domains:
-            emails = EmailHunter(domain, api_key).call_hunterio() # passing target and API Key for hunter
+    api_key = get_key('.hunterio')
+    
+    for domain in domains:
+        emails = EmailHunter(domain, api_key).call_hunterio() # passing target and API Key for hunter
         
         if emails:
             try:
                 mkdir("results")
             except FileExistsError:
                 pass
-                
-            with open("results/emails.lst", "w") as f:
+                    
+            with open(f"results/{domain}-emails.lst", "w") as f:
                 for email in emails:
                     f.write(email + "\n")
 
-                
-    except Exception:            
-        pass
+        else:
+            print(f"[!] No emails found for {domain}")
+
 
 def main():
 
@@ -101,10 +102,8 @@ def main():
     if path.isfile('.chaos'):
         threadsChaos = []
 
-        api_key = get_key('.chaos')
-
         for domain in domains:
-            thread = threading.Thread(target=query_chaos, args=(domain, api_key))
+            thread = threading.Thread(target=query_chaos, args=(domain,))
             threadsChaos.append(thread)
             thread.start()
 
@@ -116,7 +115,7 @@ def main():
 
     # if .hunterio file is found, hunt emails using hunter.io api_key
     if path.isfile('.hunterio'):
-        call_hunter('.hunterio', domains)
+        call_hunter(domains)
 
 
     # wait for crt.sh to finish to start port scanning on every IP using shodan

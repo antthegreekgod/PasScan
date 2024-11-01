@@ -10,8 +10,8 @@ class CrtPassiveScan:
         self.domain = domain
         self.pattern = "\S.*" + self.domain # pattern where string does not contain white space character
         self.clean = "<BR>|>|<|\*"
-        self.temp1 = "temp1.txt"
-        self.temp2 = "temp2.txt"
+        self.temp1 = f"{domain}-temp1.txt"
+        self.temp2 = f"{domain}-temp2.txt"
 
     def query(self):
 
