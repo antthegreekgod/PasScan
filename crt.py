@@ -1,4 +1,6 @@
 import requests
+import re
+from os import remove
 
 class CrtPassiveScan:
 
@@ -6,6 +8,10 @@ class CrtPassiveScan:
 
         self.crt = "https://crt.sh/?q="
         self.domain = domain
+        self.pattern = "\S.*" + self.domain # pattern where string does not contain white space character
+        self.clean = "<BR>|>|<|\*"
+        self.temp1 = "temp1.txt"
+        self.temp2 = "temp2.txt"
 
     def query(self):
 
@@ -14,8 +20,54 @@ class CrtPassiveScan:
         try:
             r = requests.get(url)
 
-            with open("out.txt", "w") as f:
+            with open(self.temp1, "w") as f:
                 f.write(r.text)
+            
+            subdomains = self.extract()
+            return subdomains
 
         except TimeoutError:
             print("[!] crt.sh does not respond")
+            return
+
+    @staticmethod
+    def eliminate_duplicates(duplicates):
+
+        unique = list(dict.fromkeys(duplicates)) # eliminate duplicates
+
+        for elem in range(len(unique)): # get rid off intial annoying dot
+            if unique[elem][0] == '.':
+                unique[elem] = unique[elem][1:]
+        
+        return unique
+    
+    def cleanup(self):
+        with open(self.temp1, "r") as f:
+            with open(self.temp2, "w") as w:
+                w.write(re.sub(self.clean, '\n', f.read()))
+
+
+    def find_match(self):
+        with open(self.temp2, "r") as z:   
+            return re.findall(self.pattern, z.read())[9:] # first 9 positions in list are rubbish
+        
+    
+    def delete_temp_files(self):
+        remove(self.temp1)
+        remove(self.temp2)
+
+    def extract(self):
+
+        # make some modifications to file with crt.sh response for easier regex pattern matching
+        self.cleanup()    
+
+        # extract matches
+        subdomains_duplicates = self.find_match()
+        
+        # remove duplicates
+        subdomains = self.eliminate_duplicates(subdomains_duplicates)
+
+        # delete temp files
+        self.delete_temp_files()
+
+        return subdomains

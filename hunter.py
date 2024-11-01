@@ -13,7 +13,8 @@ class EmailHunter:
         r = requests.get(self.url)
         
         if "No user found for the API key supplied" in r.text:
-            return "Hunter.io: No user found for the API key supplied"
+            print("Hunter.io: No user found for the API key supplied")
+            return
 
         else:
             email_list = []
@@ -22,7 +23,7 @@ class EmailHunter:
 
                 for email in emails:
                     email_list.append(email['value'])
-
+                print(email_list)
                 return email_list
             
             except:
