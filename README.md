@@ -2,7 +2,7 @@
 
 PasScan is a tool under development to passively scan any target (domain).
 
-3 different datasets are used to gather Open Source Information:
+4 different datasets are used to gather Open Source Information:
 - crt.sh
 - shodan.io
 - hunter.io
