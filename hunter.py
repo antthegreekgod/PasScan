@@ -1,11 +1,13 @@
 import json
-import sys
 import requests
+
+from pwn import *
 
 class EmailHunter:
     def __init__(self, domain, api_key):
 
         self.url = "https://api.hunter.io/v2/domain-search?domain=" + domain + "&api_key=" + api_key
+        self.p1 = log.progress("Scanning emails for " + domain)
 
     def call_hunterio(self):
 
@@ -13,7 +15,7 @@ class EmailHunter:
         r = requests.get(self.url)
         
         if "No user found for the API key supplied" in r.text:
-            print("Hunter.io: No user found for the API key supplied")
+            self.p1.failure("Hunter.io: No user found for the API key supplied")
             return
 
         else:
@@ -23,8 +25,10 @@ class EmailHunter:
 
                 for email in emails:
                     email_list.append(email['value'])
-                print(email_list)
+                    
+                self.p1.success("Done!")
                 return email_list
             
             except:
-                return "Something went wrong, no results came back"
+                self.p1.failure("Something went wrong, no results came back")
+                return

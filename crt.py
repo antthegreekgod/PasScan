@@ -1,6 +1,7 @@
 import requests
 import re
 from os import remove
+from pwn import *
 
 class CrtPassiveScan:
 
@@ -12,6 +13,8 @@ class CrtPassiveScan:
         self.clean = "<BR>|>|<|\*"
         self.temp1 = f"{domain}-temp1.txt"
         self.temp2 = f"{domain}-temp2.txt"
+        self.p1 = log.progress("Scanning " + domain + " with crt.sh")
+
 
     def query(self):
 
@@ -24,10 +27,11 @@ class CrtPassiveScan:
                 f.write(r.text)
             
             subdomains = self.extract()
+            self.p1.success("Done!")
             return subdomains
 
         except TimeoutError:
-            print("[!] crt.sh does not respond")
+            self.p1.failure("crt.sh does not respond")
             return
 
     @staticmethod

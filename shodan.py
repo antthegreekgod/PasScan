@@ -1,6 +1,7 @@
 from dns import resolver
 import requests
 import json
+from pwn import *
 
 class Shodan:
 
@@ -10,6 +11,8 @@ class Shodan:
         self.domain = domain
         self.ips = []
         self.ports = []
+        self.p1 = log.progress("Scanning " + domain + " with shodan")
+
 
         try:
             ips = resolver.query(domain, "A")
@@ -29,5 +32,6 @@ class Shodan:
                 self.ports.append(response["ports"])
             except KeyError:
                 continue
-
+        
+        self.p1.success("Done!")
         return self.ips, self.ports
