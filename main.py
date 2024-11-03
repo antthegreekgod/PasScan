@@ -43,7 +43,8 @@ def query_chaos(apex):
     subdomains = Chaos(apex, api_key).query_chaos() # Chaos().query_chaos() returns a list, but i'll be turning its elements into dictionary keys
     
     for sub in subdomains:
-        subdomainDB[apex]['subdomains'] = {sub: {}}
+        subdomainDB[apex]['subdomains'][sub] = {}
+                
 def query_crt(apex):
 
     subdomains = CrtPassiveScan(apex).query() # make and save crt.sh petition
@@ -82,7 +83,7 @@ def call_hunter(apex):
 
 def add_apex(domain, file):
     if domain:
-        subdomainDB[domain] = {}
+        subdomainDB[domain] = {"subdomains":{}}
     
     if file:
         try:    
@@ -91,7 +92,7 @@ def add_apex(domain, file):
 
                 for apex in apexes:
                     if apex not in subdomainDB:
-                        subdomainDB[apex] = {}
+                        subdomainDB[apex] = {"subdomains":{}}
 
         except FileNotFoundError:
             pass
@@ -106,7 +107,6 @@ def main():
         sys.exit("[!] No file nor domain was provided to scan. Use -h or --help to view the help menu")
     
     add_apex(args.domain, args.file) # add apex domains as dictionary keys to subdomainDB
-        
 
     # start with chaos subdomain enum
     if path.isfile('.chaos'):
