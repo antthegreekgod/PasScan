@@ -22,5 +22,5 @@ pip3 install -r requirements.txt
 ## Usage
 
 ```python
-python3 ./main.py -d/--domain <single domain scan> -f/--file <read set of domains from file> -e/--email <path to file with hunter.io API_KEY>
+python3 ./main.py -d/--domain <single domain scan> -f/--file <read set of domains from file>
 ```
