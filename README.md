@@ -1,6 +1,6 @@
 # PasScan
 
-PasScan is a tool under development to passively scan any target.
+PasScan is a tool under development to passively scan any target (domain).
 
 3 different datasets are used to gather Open Source Information:
 - crt.sh
@@ -20,7 +20,10 @@ pip3 install -r requirements.txt
 ```
 
 ## Usage
-
 ```python
 python3 ./main.py -d/--domain <single domain scan> -f/--file <read set of domains from file>
 ```
+### API Keys
+To unleash the full potential of this tool, make sure to include in the following file all its corresponding API Keys:
+- .hunterio
+- .chaos
