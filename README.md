@@ -24,6 +24,6 @@ pip3 install -r requirements.txt
 python3 ./main.py -d/--domain <single domain scan> -f/--file <read set of domains from file>
 ```
 ### API Keys
-To unleash the full potential of this tool, make sure to include in the following file all its corresponding API Keys:
+To unleash the full potential of this tool, make sure to include in the following files its corresponding API Keys:
 - .hunterio
 - .chaos
